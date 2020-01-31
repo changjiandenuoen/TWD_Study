@@ -12,10 +12,12 @@ def index(request):
     # -likes means in descending order
     # [:5] means top from first index to 5th index (top 5), return a subset of Category objects
     category_list = Category.objects.order_by('-likes')[:5]
+    page_list = Page.objects.order_by('-views')[:5]
 
     context_dict = {}
     context_dict['boldmessage'] = 'Crunchy, creamy, cookie, candy, cupcake!'
     context_dict['categories'] = category_list
+    context_dict['pages'] = page_list
 
     # Return a rendered response to send to the client
     # We make use of the shortcut function to make our lives easier
