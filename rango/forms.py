@@ -1,5 +1,7 @@
 from django import forms
 from rango.models import Page, Category
+from django.contrib.auth.models import User
+from rango.models import UserProfile
 
 
 class CategoryForm(forms.ModelForm):
@@ -48,3 +50,22 @@ class PageForm(forms.ModelForm):
             cleaned_data['url'] = url
 
         return cleaned_data
+
+
+class UserForm(forms.ModelForm):
+    
+    # By using PasswordInput method, html will hide when user input their password
+    password = forms.CharField(widget=forms.PasswordInput())
+
+    # describe additional information
+    # model = User means UserForm class associate with User Model
+    # Here we only want to show name, email, password for a user.
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password')
+
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ('website', 'picture')
