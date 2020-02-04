@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.http import HttpResponse
 from django.urls import reverse
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.decorators import login_required
 
 from rango.models import Category
 from rango.models import Page
@@ -169,3 +171,45 @@ def register(request):
                   context={'user_form': user_form,
                            'profile_form': profile_form,
                            'registered': registered})
+
+
+def user_login(request):
+    if request.method == 'POST':
+
+        # This information is obtained from the login form
+        # We use request.POST.get('<varible>')  rather than request.POST['<varible>']
+        # because the request.POST.get return None if value does not exist
+        # but request.POST['<varible>'] will return exception
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        # use authenticate method to check if the username/password combination is valid
+        user = authenticate(username=username, password=password)
+
+        if user:
+            if user.is_active:
+                # log in successful
+                login(request, user)
+                return redirect(reverse('rango:index'))
+            else:
+                # user is not active, cannot log in!
+                return HttpResponse("Your Rango account is disabled")
+
+        else:
+            # wrong input, cannot log in!
+            print(f"Invalid login details: {username}, {password}")
+            return HttpResponse("Invalid login details supplied")
+
+    else:
+        # If it is a GET request
+        return render(request, 'rango/login.html')
+
+
+@login_required
+def restricted(request):
+    return HttpResponse("Since you're logged in, you can see this text!")
+
+
+def user_logout(request):
+    logout(request)
+    return redirect(reverse('rango:index'))

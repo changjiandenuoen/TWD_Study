@@ -126,5 +126,6 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+LOGIN_URL = 'rango:login'
 MEDIA_ROOT = MEDIA_DIR
 MEDIA_URL = '/media/'
